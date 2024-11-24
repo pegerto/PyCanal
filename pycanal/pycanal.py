@@ -176,8 +176,12 @@ class Canal():
         
         # Calculate MSA frequencies
         all_sites = fasta_df.values.reshape(-1)
-        msa_counts = np.unique(all_sites, return_counts=True)
-        msa_counts = pd.Series(msa_counts[1], index=msa_counts[0])
+        msa_counts_fasta = np.unique(all_sites, return_counts=True)
+        all_amino_acids = {aa: 0 for aa in self.aminoacid_letters}
+        observed_counts = dict(zip(msa_counts_fasta[0], msa_counts_fasta[1]))
+        all_amino_acids.update(observed_counts)
+        msa_counts = pd.Series(all_amino_acids)
+
         msa_freqs = pd.DataFrame(index=self.aminoacid_letters, dtype=float)
         msa_freqs['msa_freqs'] = msa_counts[np.array(self.aminoacid_letters)]
         msa_freqs['msa_freqs'] = msa_freqs['msa_freqs'] / msa_freqs['msa_freqs'].sum()
